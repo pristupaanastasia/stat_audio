@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/npat-efault/crc16"
+	"github.com/tarm/serial"
 	"log"
-	"net"
 	"os"
-	"strconv"
 )
 
 //Frame Type (1 byte).
@@ -23,7 +21,6 @@ type Packet struct {
 	addresDevice byte    // пока неизвестен
 	command      [2]byte //команда
 	lenData      [2]byte
-	crcHeader    [2]byte
 }
 
 const Ok byte = 0x80
@@ -41,49 +38,51 @@ const Ok byte = 0x80
 // Установка даты (0x0101).
 // Настройка шаблонов для чтения данных (0x0102).
 func main() {
-	ln, _ := net.Listen("tcp", ":8081")
+	var port string
 
 	packet := &Packet{
 		frameType: 0x7B,
 		command:   [2]byte{0x0000, 0x0000},
-		crcHeader: [2]byte{0x0000, 0x0000},
 	}
-	address, err := strconv.Atoi(os.Args[0])
+
+	if len(os.Args) < 2 {
+		port = "/dev/ttyUSB0"
+	} else {
+		port = os.Args[0] // cat /dev/tty*
+	}
+	baud := 2500000
+	c := &serial.Config{Name: port, Baud: baud}
+	s, err := serial.OpenPort(c)
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
-	packet.addresDevice = byte(address)
-	conn, _ := ln.Accept()
+
+	packet.addresDevice = 1 // номер com порта
 
 	data := make([]byte, 8)
 	conf := crc16.PPP
-	buf := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
-	packet.crcHeader[0] = byte(buf)
-	buf = buf >> 8
-	packet.crcHeader[1] = byte(buf)
-	conn.Write([]byte(fmt.Sprintf("%v", packet)))
+	crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
+
+	s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
 	for {
-		_, err := bufio.NewReader(conn).Read(data)
+		_, err := s.Read(data)
 		if err != nil {
 			continue
 		}
 		if data[2] == Ok && data[3] == 0 {
 			log.Println("Conn success")
 			break
+		} else {
+			log.Println("error", data[2], data[3])
 		}
 	}
 
 	for {
-		// Будем прослушивать все сообщения разделенные \n
-		n, err := bufio.NewReader(conn).Read(data)
+		n, err := s.Read(data)
 		if err != nil {
 			continue
 		}
-		// Распечатываем полученое сообщение
 		fmt.Print("Message Received:", data[:n])
-		// Процесс выборки для полученной строки
-		// Отправить новую строку обратно клиенту
-
 	}
 
 }
