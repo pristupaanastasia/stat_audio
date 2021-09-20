@@ -1,5 +1,7 @@
 # stat_audio
 
-## go build main.go
+## Запуск
 
-## ./main
+* go build main.go
+
+* ./main
