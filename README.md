@@ -2,6 +2,6 @@
 
 ## Запуск
 
-* go build main.go
+go build main.go
 
-* ./main
+./main
