@@ -6,6 +6,7 @@ import (
 	"github.com/tarm/serial"
 	"log"
 	"os"
+	"time"
 )
 
 //Frame Type (1 byte).
@@ -46,35 +47,42 @@ func main() {
 	}
 
 	if len(os.Args) < 2 {
-		port = "/dev/ttyUSB0"
+		port = "COM3"
 	} else {
-		port = os.Args[0] // cat /dev/tty*
+		port = os.Args[0]
 	}
-	baud := 2500000
+	baud := 115200
 	c := &serial.Config{Name: port, Baud: baud}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	packet.addresDevice = 1 // номер com порта
+	packet.addresDevice = 3 //
 
 	data := make([]byte, 8)
 	conf := crc16.PPP
 	crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
 
 	s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
-	for {
+	var i uint8
+	for i < 255 {
+		packet.addresDevice = i
+		crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
+
+		s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
+		time.Sleep(time.Second)
 		_, err := s.Read(data)
 		if err != nil {
 			continue
 		}
 		if data[2] == Ok && data[3] == 0 {
-			log.Println("Conn success")
+			log.Println("Conn success, address:", i)
 			break
 		} else {
 			log.Println("error", data[2], data[3])
 		}
+		i++
 	}
 
 	for {
