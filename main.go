@@ -84,6 +84,7 @@ func main() {
 						break
 					}
 				}
+				log.Println(data)
 			}
 		}
 
