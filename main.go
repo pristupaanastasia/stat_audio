@@ -6,6 +6,7 @@ import (
 	"github.com/tarm/serial"
 	"log"
 	"os"
+	"time"
 )
 
 //Frame Type (1 byte).
@@ -70,7 +71,7 @@ func main() {
 		crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
 
 		s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
-		//time.Sleep(time.Second)
+		time.Sleep(time.Second)
 		_, err := s.Read(data)
 		if err != nil {
 			continue
@@ -82,14 +83,6 @@ func main() {
 			log.Println("error", data[2], data[3], i)
 		}
 		i++
-	}
-
-	for {
-		n, err := s.Read(data)
-		if err != nil {
-			continue
-		}
-		fmt.Print("Message Received:", data[:n])
 	}
 
 }
