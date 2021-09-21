@@ -43,7 +43,7 @@ func main() {
 
 	packet := &Packet{
 		frameType: 0x7B,
-		command:   [2]byte{0x00, 0x01},
+		command:   [2]byte{0x00, 0x00},
 	}
 
 	if len(os.Args) < 2 {
@@ -58,37 +58,39 @@ func main() {
 		log.Fatal(err)
 	}
 
-	packet.addresDevice = 3 //
+	packet.addresDevice = 5 //
 
 	data := make([]byte, 8)
 	conf := crc16.PPP
 	crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
+	data[0] = packet.frameType
+	data[1] = packet.addresDevice
+	data[2] = packet.command[0]
+	data[3] = packet.command[1]
+	data[4] = packet.lenData[0]
+	data[5] = packet.lenData[1]
+	data[7] = uint8(crc)
+	crc = crc >> 8
+	data[6] = uint8(crc)
+	log.Println(data)
+	s.Write(data)
 
-	s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
+	t := time.Tick(time.Second * 3)
 	var i uint8
-	for i < 255 {
-		packet.addresDevice = i
-		crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
-
-		s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
-		t := time.Tick(time.Second * 3)
-		for {
-			select {
-			case <-t:
-				break
-			default:
-				_, err := s.Read(data)
-				if err == nil {
-					if data[2] == Ok && data[3] == 0 {
-						log.Println("Conn success, address:", i)
-						break
-					}
+	for {
+		select {
+		case <-t:
+			break
+		default:
+			_, err := s.Read(data)
+			if err == nil {
+				if data[2] == Ok && data[3] == 0 {
+					log.Println("Conn success, address:", i)
+					break
 				}
-				log.Println(data)
 			}
+			log.Println(data)
 		}
-
-		i++
 	}
 
 }
