@@ -75,6 +75,7 @@ func main() {
 	log.Println(data)
 	s.Write(data)
 
+	buf := make([]byte, 20)
 	t := time.Tick(time.Second * 3)
 	var i uint8
 	for {
@@ -82,14 +83,14 @@ func main() {
 		case <-t:
 			break
 		default:
-			_, err := s.Read(data)
+			_, err := s.Read(buf)
 			if err == nil {
-				if data[2] == Ok && data[3] == 0 {
+				if buf[2] == Ok && buf[3] == 0 {
 					log.Println("Conn success, address:", i)
 					break
 				}
 			}
-			log.Println(data)
+			log.Println(buf)
 		}
 	}
 
