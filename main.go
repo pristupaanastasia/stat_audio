@@ -52,7 +52,7 @@ func main() {
 		port = os.Args[0]
 	}
 	baud := 115200
-	c := &serial.Config{Name: port, Baud: baud}
+	c := &serial.Config{Name: port, Baud: baud, ReadTimeout: time.Second * 3}
 	s, err := serial.OpenPort(c)
 	if err != nil {
 		log.Fatal(err)
@@ -74,24 +74,14 @@ func main() {
 	data[6] = uint8(crc)
 	log.Println(data)
 	s.Write(data)
-
+	time.Sleep(time.Second / 2)
 	buf := make([]byte, 20)
-	t := time.Tick(time.Second * 3)
-	var i uint8
-	for {
-		select {
-		case <-t:
-			break
-		default:
-			_, err := s.Read(buf)
-			if err == nil {
-				if buf[2] == Ok && buf[3] == 0 {
-					log.Println("Conn success, address:", i)
-					break
-				}
-			}
-			log.Println(buf)
+	n, err := s.Read(buf)
+	if err == nil {
+		if buf[2] == Ok && buf[3] == 0 {
+			log.Println("Conn success, address:")
 		}
 	}
+	log.Println(buf[:n])
 
 }
