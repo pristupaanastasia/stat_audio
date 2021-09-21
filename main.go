@@ -71,17 +71,17 @@ func main() {
 		crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
 
 		s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
-		time.Sleep(time.Second)
-		_, err := s.Read(data)
-		if err != nil {
-			continue
+		t := time.Tick(time.Second * 3)
+		for t == nil {
+			_, err := s.Read(data)
+			if err == nil {
+				if data[2] == Ok && data[3] == 0 {
+					log.Println("Conn success, address:", i)
+					break
+				}
+			}
 		}
-		if data[2] == Ok && data[3] == 0 {
-			log.Println("Conn success, address:", i)
-			break
-		} else {
-			log.Println("error", data[2], data[3], i)
-		}
+
 		i++
 	}
 
