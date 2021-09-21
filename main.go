@@ -80,7 +80,7 @@ func main() {
 			log.Println("Conn success, address:", i)
 			break
 		} else {
-			log.Println("error", data[2], data[3])
+			log.Println("error", data[2], data[3], i)
 		}
 		i++
 	}
