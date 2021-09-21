@@ -43,7 +43,7 @@ func main() {
 
 	packet := &Packet{
 		frameType: 0x7B,
-		command:   [2]byte{0x0000, 0x0000},
+		command:   [2]byte{0x00, 0x01},
 	}
 
 	if len(os.Args) < 2 {
