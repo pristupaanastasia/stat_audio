@@ -72,12 +72,17 @@ func main() {
 
 		s.Write([]byte(fmt.Sprintf("%v%v", packet, crc)))
 		t := time.Tick(time.Second * 3)
-		for t == nil {
-			_, err := s.Read(data)
-			if err == nil {
-				if data[2] == Ok && data[3] == 0 {
-					log.Println("Conn success, address:", i)
-					break
+		for {
+			select {
+			case <-t:
+				break
+			default:
+				_, err := s.Read(data)
+				if err == nil {
+					if data[2] == Ok && data[3] == 0 {
+						log.Println("Conn success, address:", i)
+						break
+					}
 				}
 			}
 		}
