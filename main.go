@@ -110,6 +110,7 @@ func main() {
 			fmt.Printf("Sent %v bytes\n", n)
 			buff := make([]byte, 100)
 			for {
+				i := 0
 				n, err := s.Read(buff)
 				if err != nil {
 					log.Fatal(err)
@@ -119,7 +120,17 @@ func main() {
 					fmt.Println("\nEOF")
 					break
 				}
-				fmt.Printf("%v", string(buff[:n]))
+				for i < n {
+					if buff[i] == 0x7B {
+						i = i + 2
+						if buff[i] == 0x80 {
+							log.Println("Conn success")
+							fmt.Printf("%v", string(buff[:n]))
+						}
+					}
+					i++
+				}
+				//fmt.Printf("%v", string(buff[:n]))
 			}
 		}
 
