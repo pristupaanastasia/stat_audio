@@ -76,13 +76,14 @@ func main() {
 
 	data := make([]byte, 8)
 	conf := crc16.PPP
-	crc := crc16.Checksum(conf, []byte(fmt.Sprintf("%v", packet)))
+
 	data[0] = packet.frameType
 	data[1] = packet.addresDevice
 	data[2] = packet.command[0]
 	data[3] = packet.command[1]
 	data[4] = packet.lenData[0]
 	data[5] = packet.lenData[1]
+	crc := crc16.Checksum(conf, data[:6])
 	data[7] = uint8(crc)
 	crc = crc >> 8
 	data[6] = uint8(crc)
@@ -106,6 +107,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			log.Println(s.GetModemStatusBits())
 
 			fmt.Printf("Sent %v bytes\n", n)
 			buff := make([]byte, 100)
