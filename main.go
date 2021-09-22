@@ -106,15 +106,15 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			err = s.SetDTR(false)
-			if err != nil {
-				log.Println(err)
-			}
+			//err = s.SetDTR(false)
+			//if err != nil {
+			//	log.Println(err)
+			//}
 
-			err = s.SetRTS(true)
-			if err != nil {
-				log.Println(err)
-			}
+			//err = s.SetRTS(true)
+			//if err != nil {
+			//	log.Println(err)
+			//}
 			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
