@@ -3,10 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/npat-efault/crc16"
-	"github.com/tarm/serial"
+	"go.bug.st/serial.v1"
+
+	//"go.bug.st/serial.v1"
+
+	//"github.com/tarm/serial"
+	"go.bug.st/serial.v1/enumerator"
 	"log"
-	"os"
-	"time"
+	//"os"
+	//"time"
 )
 
 //Frame Type (1 byte).
@@ -39,24 +44,32 @@ const Ok byte = 0x80
 // Установка даты (0x0101).
 // Настройка шаблонов для чтения данных (0x0102).
 func main() {
-	var port string
+	//var port string
+	ports, err := enumerator.GetDetailedPortsList()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if len(ports) == 0 {
+		fmt.Println("No serial ports found!")
+		return
+	}
 
 	packet := &Packet{
 		frameType: 0x7B,
 		command:   [2]byte{0x00, 0x00},
 	}
 
-	if len(os.Args) < 2 {
-		port = "COM3"
-	} else {
-		port = os.Args[0]
-	}
-	baud := 115200
-	c := &serial.Config{Name: port, Baud: baud, ReadTimeout: time.Second * 3}
-	s, err := serial.OpenPort(c)
-	if err != nil {
-		log.Fatal(err)
-	}
+	//if len(os.Args) < 2 {
+	//	port = "/dev/tty"
+	//} else {
+	//	port = os.Args[0]
+	//}
+	//baud := 115200
+	//c := &serial.Config{Name: port, Baud: baud, ReadTimeout: time.Second * 3}
+	//s, err := serial.OpenPort(c)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
 	packet.addresDevice = 5 //
 
@@ -73,15 +86,52 @@ func main() {
 	crc = crc >> 8
 	data[6] = uint8(crc)
 	log.Println(data)
-	s.Write(data)
-	time.Sleep(time.Second / 2)
-	buf := make([]byte, 20)
-	n, err := s.Read(buf)
-	if err == nil {
-		if buf[2] == Ok && buf[3] == 0 {
-			log.Println("Conn success, address:")
-		}
+	mode := &serial.Mode{
+		BaudRate: 115200,
+		Parity:   serial.EvenParity,
+		DataBits: 20,
+		StopBits: serial.OneStopBit,
 	}
-	log.Println(buf[:n])
+
+	for _, port := range ports {
+		if port.IsUSB {
+			fmt.Printf("Found port: %s\n", port.Name)
+			fmt.Printf("   USB ID     %s:%s\n", port.VID, port.PID)
+			fmt.Printf("   USB serial %s\n", port.SerialNumber)
+			s, err := serial.Open(port.Name, mode)
+			if err != nil {
+				log.Fatal(err)
+			}
+			n, err := s.Write(data)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Printf("Sent %v bytes\n", n)
+			buff := make([]byte, 100)
+			for {
+				n, err := s.Read(buff)
+				if err != nil {
+					log.Fatal(err)
+					continue
+				}
+				if n == 0 {
+					fmt.Println("\nEOF")
+					break
+				}
+				fmt.Printf("%v", string(buff[:n]))
+			}
+		}
+
+	}
+	//s.Write(data)
+	//time.Sleep(time.Second / 2)
+	//buf := make([]byte, 128)
+	//n, err := s.Read(buf)
+	//if err == nil {
+	//	if buf[2] == Ok && buf[3] == 0 {
+	//		log.Println("Conn success, address:")
+	//	}
+	//}
+	//log.Println(buf[:n])
 
 }
