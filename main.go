@@ -129,6 +129,7 @@ func main() {
 							log.Println("Conn success")
 							fmt.Printf("%v", string(buff[:n]))
 						}
+						log.Println(buff[i])
 					}
 					i++
 				}
