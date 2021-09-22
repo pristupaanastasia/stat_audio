@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/npat-efault/crc16"
 	"go.bug.st/serial.v1"
-
 	//"go.bug.st/serial.v1"
 
 	//"github.com/tarm/serial"
@@ -84,6 +83,7 @@ func main() {
 	data[4] = packet.lenData[0]
 	data[5] = packet.lenData[1]
 	crc := crc16.Checksum(conf, data[:6])
+
 	data[7] = uint8(crc)
 	crc = crc >> 8
 	data[6] = uint8(crc)
@@ -102,6 +102,15 @@ func main() {
 			s, err := serial.Open(port.Name, mode)
 			if err != nil {
 				log.Fatal(err)
+			}
+			err = s.SetDTR(true)
+			if err != nil {
+				log.Println(err)
+			}
+
+			err = s.SetRTS(true)
+			if err != nil {
+				log.Println(err)
 			}
 			n, err := s.Write(data)
 			if err != nil {
