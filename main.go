@@ -9,6 +9,7 @@ import (
 
 	//"github.com/tarm/serial"
 	"go.bug.st/serial.v1/enumerator"
+
 	"log"
 	//"os"
 	//"time"
@@ -89,8 +90,6 @@ func main() {
 	mode := &serial.Mode{
 		BaudRate: 115200,
 		Parity:   serial.EvenParity,
-		DataBits: 20,
-		StopBits: serial.OneStopBit,
 	}
 
 	for _, port := range ports {
@@ -98,6 +97,7 @@ func main() {
 			fmt.Printf("Found port: %s\n", port.Name)
 			fmt.Printf("   USB ID     %s:%s\n", port.VID, port.PID)
 			fmt.Printf("   USB serial %s\n", port.SerialNumber)
+
 			s, err := serial.Open(port.Name, mode)
 			if err != nil {
 				log.Fatal(err)
@@ -106,6 +106,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+
 			fmt.Printf("Sent %v bytes\n", n)
 			buff := make([]byte, 100)
 			for {
