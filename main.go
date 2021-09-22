@@ -105,7 +105,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			err = s.SetDTR(true)
+			err = s.SetDTR(false)
 			if err != nil {
 				log.Println(err)
 			}
