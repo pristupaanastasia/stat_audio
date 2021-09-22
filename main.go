@@ -75,20 +75,21 @@ func main() {
 
 	packet.addresDevice = 5 //
 
-	data := make([]byte, 8)
+	data := make([]byte, 10)
 	conf := crc16.PPP
+	data[0] = '$'
+	data[1] = packet.frameType
+	data[2] = packet.addresDevice
+	data[3] = packet.command[0]
+	data[4] = packet.command[1]
+	data[5] = packet.lenData[0]
+	data[6] = packet.lenData[1]
+	crc := crc16.Checksum(conf, data[1:6])
 
-	data[0] = packet.frameType
-	data[1] = packet.addresDevice
-	data[2] = packet.command[0]
-	data[3] = packet.command[1]
-	data[4] = packet.lenData[0]
-	data[5] = packet.lenData[1]
-	crc := crc16.Checksum(conf, data[:6])
-
-	data[7] = uint8(crc)
+	data[8] = uint8(crc)
 	crc = crc >> 8
-	data[6] = uint8(crc)
+	data[7] = uint8(crc)
+	data[9] = 0x0D
 	log.Println(data)
 	mode := &serial.Mode{
 		BaudRate: 115200,
@@ -135,12 +136,18 @@ func main() {
 					break
 				}
 				for i < n {
+					if buff[i] == '!' {
+						log.Println("Success")
+					}
 					if buff[i] == 0x7B {
 						i = i + 2
 						if buff[i] == 0x80 {
 							log.Println("Conn success")
 							fmt.Printf("%v", string(buff[:n]))
 						}
+						log.Println(buff[i])
+					}
+					if buff[i] == '?' {
 						log.Println(buff[i])
 					}
 					i++
