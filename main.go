@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/npat-efault/crc16"
 	"go.bug.st/serial.v1"
+	"time"
+
 	//"go.bug.st/serial.v1"
 
 	//"github.com/tarm/serial"
@@ -112,6 +114,7 @@ func main() {
 			if err != nil {
 				log.Println(err)
 			}
+			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
 				log.Fatal(err)
