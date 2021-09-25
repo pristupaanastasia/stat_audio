@@ -20,6 +20,8 @@ import (
 //Addr Device (1 byte).
 //Command (2 byte).
 //Length of data (2 byte).
+//Packet ID (2 byte)
+//Reserved (2 byte)
 //CRC (header) (2 byte).
 //Data.
 // CRC (data) (2 byte).
@@ -29,6 +31,8 @@ type Packet struct {
 	addresDevice byte    // пока неизвестен
 	command      [2]byte //команда
 	lenData      [2]byte
+	packetId     [2]byte
+	reserved     [2]byte
 }
 
 const Ok byte = 0x80
@@ -59,6 +63,7 @@ func main() {
 	packet := &Packet{
 		frameType: 0x7B,
 		command:   [2]byte{0x00, 0x00},
+		packetId:  [2]byte{0x00, 0x01},
 	}
 
 	//if len(os.Args) < 2 {
@@ -77,19 +82,21 @@ func main() {
 
 	data := make([]byte, 10)
 	conf := crc16.PPP
-	data[0] = '$'
-	data[1] = packet.frameType
-	data[2] = packet.addresDevice
-	data[3] = packet.command[0]
-	data[4] = packet.command[1]
-	data[5] = packet.lenData[0]
-	data[6] = packet.lenData[1]
+	data[0] = packet.frameType
+	data[1] = packet.addresDevice
+	data[2] = packet.command[0]
+	data[3] = packet.command[1]
+	data[4] = packet.lenData[0]
+	data[5] = packet.lenData[1]
+	data[6] = packet.packetId[0]
+	data[7] = packet.packetId[1]
+	data[8] = packet.reserved[0]
+	data[9] = packet.reserved[1]
 	crc := crc16.Checksum(conf, data[1:6])
 
-	data[8] = uint8(crc)
+	data[11] = uint8(crc)
 	crc = crc >> 8
-	data[7] = uint8(crc)
-	data[9] = 0x0D
+	data[10] = uint8(crc)
 	log.Println(data)
 	mode := &serial.Mode{
 		BaudRate: 115200,
