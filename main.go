@@ -111,7 +111,7 @@ func main() {
 
 	packet := &Packet{
 		frameType: 0x7B,
-		command:   [2]byte{0x00, 0x01},
+		command:   [2]byte{0x00, 0x00},
 		packetId:  [2]byte{0x00, 0x01},
 	}
 
@@ -187,7 +187,7 @@ func main() {
 
 					i++
 				}
-				fmt.Printf("%v", string(buff[:n]))
+				//fmt.Printf("%v", string(buff[:n]))
 			}
 			packet.packetId[1] = 2
 			packet.command[1] = 1
