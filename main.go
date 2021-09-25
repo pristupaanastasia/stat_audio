@@ -70,6 +70,34 @@ func SetByte(packet *Packet) []byte {
 	data[10] = uint8(crc)
 	return data
 }
+
+func ReadByte(s serial.Port) {
+	buff := make([]byte, 100)
+	for {
+		i := 0
+		n, err := s.Read(buff)
+		if err != nil {
+			log.Fatal(err)
+			continue
+		}
+		if n == 0 {
+			fmt.Println("\nEOF")
+			break
+		}
+		for i < n {
+			if buff[i] == 0x7B {
+				i = i + 2
+				if buff[i] == 0x80 {
+					log.Println("Conn success")
+					fmt.Printf("%v", string(buff[:n]))
+				}
+				log.Println(buff[i])
+			}
+			i++
+		}
+		//fmt.Printf("%v", string(buff[:n]))
+	}
+}
 func main() {
 	//var port string
 	ports, err := enumerator.GetDetailedPortsList()
@@ -149,9 +177,7 @@ func main() {
 					break
 				}
 				for i < n {
-					if buff[i] == '!' {
-						log.Println("Success")
-					}
+
 					if buff[i] == 0x7B {
 						i = i + 2
 						if buff[i] == 0x80 {
@@ -160,9 +186,7 @@ func main() {
 						}
 						log.Println(buff[i])
 					}
-					if buff[i] == '?' {
-						log.Println(buff[i])
-					}
+
 					i++
 				}
 				//fmt.Printf("%v", string(buff[:n]))
@@ -170,6 +194,13 @@ func main() {
 			packet.packetId[1] = 2
 			packet.command[1] = 1
 			data = SetByte(packet)
+
+			n, err = s.Write(data)
+			if err != nil {
+				log.Fatal(err)
+			}
+			time.Sleep(time.Second / 2)
+
 		}
 
 	}
