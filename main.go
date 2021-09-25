@@ -49,6 +49,27 @@ const Ok byte = 0x80
 // Установка времени (0x0100).
 // Установка даты (0x0101).
 // Настройка шаблонов для чтения данных (0x0102).
+
+func SetByte(packet *Packet) []byte {
+	data := make([]byte, 12)
+	conf := crc16.PPP
+	data[0] = packet.frameType
+	data[1] = packet.addresDevice
+	data[2] = packet.command[0]
+	data[3] = packet.command[1]
+	data[4] = packet.lenData[0]
+	data[5] = packet.lenData[1]
+	data[6] = packet.packetId[0]
+	data[7] = packet.packetId[1]
+	data[8] = packet.reserved[0]
+	data[9] = packet.reserved[1]
+	crc := crc16.Checksum(conf, data[:9])
+
+	data[11] = uint8(crc)
+	crc = crc >> 8
+	data[10] = uint8(crc)
+	return data
+}
 func main() {
 	//var port string
 	ports, err := enumerator.GetDetailedPortsList()
@@ -80,23 +101,7 @@ func main() {
 
 	packet.addresDevice = 5 //
 
-	data := make([]byte, 10)
-	conf := crc16.PPP
-	data[0] = packet.frameType
-	data[1] = packet.addresDevice
-	data[2] = packet.command[0]
-	data[3] = packet.command[1]
-	data[4] = packet.lenData[0]
-	data[5] = packet.lenData[1]
-	data[6] = packet.packetId[0]
-	data[7] = packet.packetId[1]
-	data[8] = packet.reserved[0]
-	data[9] = packet.reserved[1]
-	crc := crc16.Checksum(conf, data[1:6])
-
-	data[11] = uint8(crc)
-	crc = crc >> 8
-	data[10] = uint8(crc)
+	data := SetByte(packet)
 	log.Println(data)
 	mode := &serial.Mode{
 		BaudRate: 115200,
@@ -162,6 +167,9 @@ func main() {
 				}
 				//fmt.Printf("%v", string(buff[:n]))
 			}
+			packet.packetId[1] = 2
+			packet.command[1] = 1
+			data = SetByte(packet)
 		}
 
 	}
