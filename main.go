@@ -198,7 +198,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			time.Sleep(time.Second / 2)
+			time.Sleep(time.Second)
 
 			packet.packetId[1] = 3
 			packet.command[0] = 0x02
@@ -213,7 +213,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			time.Sleep(time.Second / 2)
+			time.Sleep(time.Second)
 			for {
 
 			}
