@@ -201,8 +201,8 @@ func main() {
 			time.Sleep(time.Second)
 
 			packet.packetId[1] = 3
-			packet.command[1] = 0x02
-			packet.command[0] = 0x08
+			packet.command[1] = 0
+			packet.command[0] = 0x0A
 			packet.lenData[1] = 4
 			bytedata := SetData(48)
 			data = SetByte(packet)
