@@ -205,8 +205,7 @@ func main() {
 			packet.lenData[1] = 0x02
 			bytedata := SetData(48)
 			data = SetByte(packet)
-			s.ResetInputBuffer()
-			s.ResetOutputBuffer()
+
 			data = append(data, bytedata...)
 			n, err = s.Write(data)
 			if err != nil {
