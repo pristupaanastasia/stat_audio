@@ -192,7 +192,6 @@ func main() {
 			packet.packetId[1] = 2
 			packet.command[1] = 1
 			data = SetByte(packet)
-			s.ResetInputBuffer()
 
 			n, err = s.Write(data)
 			if err != nil {
