@@ -70,7 +70,16 @@ func SetByte(packet *Packet) []byte {
 	data[10] = uint8(crc)
 	return data
 }
-
+func SetData(data uint8) []byte {
+	bytedata := make([]byte, 4)
+	bytedata[1] = data
+	conf := crc16.PPP
+	crc := crc16.Checksum(conf, bytedata[:1])
+	bytedata[3] = uint8(crc)
+	crc = crc >> 8
+	bytedata[2] = uint8(crc)
+	return bytedata
+}
 func ReadByte(s serial.Port) {
 	buff := make([]byte, 100)
 	for {
@@ -190,6 +199,24 @@ func main() {
 				log.Fatal(err)
 			}
 			time.Sleep(time.Second / 2)
+
+			packet.packetId[1] = 3
+			packet.command[0] = 0x02
+			packet.command[1] = 0x08
+			packet.lenData[1] = 4
+			bytedata := SetData(48)
+			data = SetByte(packet)
+			s.ResetInputBuffer()
+			s.ResetOutputBuffer()
+			data = append(data, bytedata...)
+			n, err = s.Write(data)
+			if err != nil {
+				log.Fatal(err)
+			}
+			time.Sleep(time.Second / 2)
+			for {
+
+			}
 		}
 
 	}
