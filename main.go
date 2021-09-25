@@ -178,7 +178,7 @@ func main() {
 				}
 				for i < n {
 
-					if buff[i] == 0x7B {
+					if buff[i] == 0x7A {
 						i = i + 2
 						if buff[i] == 0x80 {
 							log.Println("Conn success")
