@@ -189,7 +189,7 @@ func main() {
 
 					i++
 				}
-				//fmt.Printf("%v", string(buff[:n]))
+				fmt.Printf("%v", string(buff[:n]))
 			}
 			packet.packetId[1] = 2
 			packet.command[1] = 1
