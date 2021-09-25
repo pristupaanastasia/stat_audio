@@ -133,8 +133,6 @@ func main() {
 	log.Println(data)
 	mode := &serial.Mode{
 		BaudRate: 115200,
-		Parity:   serial.EvenParity,
-		StopBits: serial.OneStopBit,
 	}
 
 	for _, port := range ports {
