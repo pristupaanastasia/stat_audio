@@ -132,7 +132,7 @@ func main() {
 	data := SetByte(packet)
 	log.Println(data)
 	mode := &serial.Mode{
-		BaudRate: 115200,
+		BaudRate: 9600,
 	}
 
 	for _, port := range ports {
