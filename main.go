@@ -192,8 +192,7 @@ func main() {
 			packet.packetId[1] = 2
 			packet.command[0] = 1
 			data = SetByte(packet)
-			s.ResetInputBuffer()
-			s.ResetOutputBuffer()
+
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
@@ -202,8 +201,8 @@ func main() {
 
 			packet.packetId[1] = 3
 			packet.command[1] = 0
-			packet.command[0] = 0x0A
-			packet.lenData[1] = 4
+			packet.command[0] = 0x08
+			packet.lenData[1] = 0x02
 			bytedata := SetData(48)
 			data = SetByte(packet)
 			s.ResetInputBuffer()
