@@ -111,7 +111,7 @@ func main() {
 
 	packet := &Packet{
 		frameType: 0x7B,
-		command:   [2]byte{0x00, 0x00},
+		command:   [2]byte{0x00, 0x01},
 		packetId:  [2]byte{0x00, 0x01},
 	}
 
