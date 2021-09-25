@@ -154,6 +154,8 @@ func main() {
 			//if err != nil {
 			//	log.Println(err)
 			//}
+			s.ResetInputBuffer()
+			s.ResetOutputBuffer()
 			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
@@ -192,7 +194,8 @@ func main() {
 			packet.packetId[1] = 2
 			packet.command[1] = 1
 			data = SetByte(packet)
-
+			s.ResetInputBuffer()
+			s.ResetOutputBuffer()
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
