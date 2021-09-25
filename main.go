@@ -179,10 +179,11 @@ func main() {
 				for i < n {
 
 					if buff[i] == 0x7A {
-						i = i + 2
+						i = i + 3
 						if buff[i] == 0x80 {
 							log.Println("Conn success")
 							fmt.Printf("%v", string(buff[:n]))
+							break
 						}
 						log.Println(buff[i])
 					}
