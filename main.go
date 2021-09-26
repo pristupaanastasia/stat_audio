@@ -73,7 +73,7 @@ func SetData(data uint8) []byte {
 	bytedata := make([]byte, 4)
 	bytedata[0] = data
 	conf := crc16.Modbus
-	crc := crc16.Checksum(conf, bytedata[:1])
+	crc := crc16.Checksum(conf, bytedata[:2])
 	bytedata[2] = uint8(crc)
 	crc = crc >> 8
 	bytedata[3] = uint8(crc)
