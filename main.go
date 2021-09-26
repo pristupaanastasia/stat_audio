@@ -64,9 +64,9 @@ func SetByte(packet *Packet) []byte {
 	data[9] = packet.reserved[0]
 	crc := crc16.Checksum(conf, data[:9])
 
-	data[10] = uint8(crc)
-	crc = crc >> 8
 	data[11] = uint8(crc)
+	crc = crc >> 8
+	data[10] = uint8(crc)
 	return data
 }
 func SetData(data uint8) []byte {
@@ -74,9 +74,9 @@ func SetData(data uint8) []byte {
 	bytedata[0] = data
 	conf := crc16.Modbus
 	crc := crc16.Checksum(conf, bytedata[:2])
-	bytedata[2] = uint8(crc)
-	crc = crc >> 8
 	bytedata[3] = uint8(crc)
+	crc = crc >> 8
+	bytedata[2] = uint8(crc)
 	return bytedata
 }
 func ReadByte(s serial.Port) {
