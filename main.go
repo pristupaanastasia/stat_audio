@@ -52,7 +52,7 @@ const Ok byte = 0x80
 
 func SetByte(packet *Packet) []byte {
 	data := make([]byte, 12)
-	conf := crc16.PPP
+	conf := crc16.Modbus
 	data[0] = packet.frameType
 	data[1] = packet.addresDevice
 	data[2] = uint8(packet.command)
@@ -72,7 +72,7 @@ func SetByte(packet *Packet) []byte {
 func SetData(data uint8) []byte {
 	bytedata := make([]byte, 4)
 	bytedata[0] = data
-	conf := crc16.PPP
+	conf := crc16.Modbus
 	crc := crc16.Checksum(conf, bytedata[:1])
 	bytedata[2] = uint8(crc)
 	crc = crc >> 8
