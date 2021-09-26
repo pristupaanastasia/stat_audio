@@ -198,24 +198,24 @@ func main() {
 			}
 			time.Sleep(time.Second)
 
-			packet.packetId = 3
-			packet.command = 3
+			packet.packetId = 4
+			packet.command = 0x0208
+
 			packet.lenData = 4
+			bytedata := SetData(48)
 			data = SetByte(packet)
-			bytedata := SetData(0)
+
 			data = append(data, bytedata...)
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
 			}
 			time.Sleep(time.Second)
-			packet.packetId = 4
-			packet.command = 0x0208
-
+			packet.packetId = 3
+			packet.command = 3
 			packet.lenData = 4
-			bytedata = SetData(48)
 			data = SetByte(packet)
-
+			bytedata = SetData(0)
 			data = append(data, bytedata...)
 			n, err = s.Write(data)
 			if err != nil {
