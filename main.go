@@ -27,11 +27,11 @@ import (
 // CRC (data) (2 byte).
 
 type Packet struct {
-	frameType    byte    // 0x7B
-	addresDevice byte    // пока неизвестен
-	command      [2]byte //команда
-	lenData      [2]byte
-	packetId     [2]byte
+	frameType    byte   // 0x7B
+	addresDevice byte   // пока неизвестен
+	command      uint16 //команда
+	lenData      uint8
+	packetId     uint8
 	reserved     [2]byte
 }
 
@@ -55,29 +55,28 @@ func SetByte(packet *Packet) []byte {
 	conf := crc16.PPP
 	data[0] = packet.frameType
 	data[1] = packet.addresDevice
-	data[2] = packet.command[0]
-	data[3] = packet.command[1]
-	data[4] = packet.lenData[0]
-	data[5] = packet.lenData[1]
-	data[6] = packet.packetId[0]
-	data[7] = packet.packetId[1]
-	data[8] = packet.reserved[0]
-	data[9] = packet.reserved[1]
+	data[2] = uint8(packet.command)
+	data[3] = uint8(packet.command >> 8)
+	data[4] = packet.lenData
+	data[6] = packet.packetId
+
+	data[8] = packet.reserved[1]
+	data[9] = packet.reserved[0]
 	crc := crc16.Checksum(conf, data[:9])
 
-	data[11] = uint8(crc)
-	crc = crc >> 8
 	data[10] = uint8(crc)
+	crc = crc >> 8
+	data[11] = uint8(crc)
 	return data
 }
 func SetData(data uint8) []byte {
 	bytedata := make([]byte, 4)
-	bytedata[1] = data
+	bytedata[0] = data
 	conf := crc16.PPP
 	crc := crc16.Checksum(conf, bytedata[:1])
-	bytedata[3] = uint8(crc)
-	crc = crc >> 8
 	bytedata[2] = uint8(crc)
+	crc = crc >> 8
+	bytedata[3] = uint8(crc)
 	return bytedata
 }
 func ReadByte(s serial.Port) {
@@ -120,8 +119,8 @@ func main() {
 
 	packet := &Packet{
 		frameType: 0x7B,
-		command:   [2]byte{0x00, 0x00},
-		packetId:  [2]byte{0x00, 0x01},
+		command:   0x00,
+		packetId:  0x01,
 	}
 
 	//if len(os.Args) < 2 {
@@ -189,8 +188,8 @@ func main() {
 				}
 				i++
 			}
-			packet.packetId[1] = 2
-			packet.command[0] = 1
+			packet.packetId = 2
+			packet.command = 1
 			data = SetByte(packet)
 
 			n, err = s.Write(data)
@@ -199,10 +198,10 @@ func main() {
 			}
 			time.Sleep(time.Second)
 
-			packet.packetId[1] = 3
-			packet.command[1] = 0
-			packet.command[0] = 0x08
-			packet.lenData[1] = 0x02
+			packet.packetId = 3
+			packet.command = 0x0208
+
+			packet.lenData = 2
 			bytedata := SetData(48)
 			data = SetByte(packet)
 
