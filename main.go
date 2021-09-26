@@ -204,8 +204,7 @@ func main() {
 			packet.lenData = 4
 			bytedata := SetData(48)
 			data = SetByte(packet)
-			s.ResetInputBuffer()
-			s.ResetOutputBuffer()
+
 			data = append(data, bytedata...)
 			n, err = s.Write(data)
 			if err != nil {
@@ -242,11 +241,37 @@ func main() {
 			data = SetByte(packet)
 			bytedata = SetData(0)
 			data = append(data, bytedata...)
+			s.ResetInputBuffer()
+			s.ResetOutputBuffer()
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
 			}
 			time.Sleep(time.Second)
+			buff = make([]byte, 100)
+			i = 0
+			n, err = s.Read(buff)
+			if err != nil {
+				log.Fatal(err)
+				continue
+			}
+			if n == 0 {
+				fmt.Println("\nEOF")
+				break
+			}
+			for i < n {
+
+				if buff[i] == 0x7A {
+					i = i + 3
+					if buff[i] == 0x80 {
+						log.Println("Conn success")
+						fmt.Printf("%v", string(buff[:n]))
+						break
+					}
+					log.Println(buff[i])
+				}
+				i++
+			}
 			for {
 
 			}
