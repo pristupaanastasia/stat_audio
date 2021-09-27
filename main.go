@@ -151,7 +151,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			s.Flush()
+			//s.Flush()
 			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
@@ -237,7 +237,7 @@ func main() {
 			data = SetByte(packet)
 			bytedata = SetData(0)
 			data = append(data, bytedata...)
-			s.Flush()
+			//s.Flush()
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
