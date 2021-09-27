@@ -154,6 +154,8 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			s.ResetInputBuffer()
+			s.ResetOutputBuffer()
 
 			time.Sleep(time.Second / 2)
 			//n, err := s.Write(data)
