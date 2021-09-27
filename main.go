@@ -199,7 +199,7 @@ func main() {
 			}
 			time.Sleep(time.Second)
 
-			packet.packetId = 4
+			packet.packetId = 3
 			packet.command = 0x0208
 
 			packet.lenData = 4
@@ -237,7 +237,7 @@ func main() {
 				i++
 			}
 			time.Sleep(time.Second * 2)
-			packet.packetId = 3
+			packet.packetId = 4
 			packet.command = 3
 			packet.lenData = 4
 			data = SetByte(packet)
@@ -275,9 +275,11 @@ func main() {
 				i++
 			}
 			time.Sleep(time.Second * 2)
+			//	s.Write([]byte(0x7B,0x05,0x09,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x7B,0xFA))
 			for {
 
 			}
+
 		}
 
 	}
