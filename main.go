@@ -151,7 +151,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-
+			s.Flush()
 			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
@@ -186,7 +186,7 @@ func main() {
 			packet.packetId = 2
 			packet.command = 1
 			data = SetByte(packet)
-			s.Flush()
+
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
