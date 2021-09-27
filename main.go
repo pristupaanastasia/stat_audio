@@ -278,6 +278,30 @@ func main() {
 			s.ResetInputBuffer()
 			s.ResetOutputBuffer()
 			s.Write([]byte{0x7B, 0x05, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7B, 0xFA})
+			buff = make([]byte, 100)
+			i = 0
+			n, err = s.Read(buff)
+			if err != nil {
+				log.Fatal(err)
+				continue
+			}
+			if n == 0 {
+				fmt.Println("\nEOF")
+				break
+			}
+			for i < n {
+
+				if buff[i] == 0x7A {
+					i = i + 3
+					if buff[i] == 0x80 {
+						log.Println("Conn success")
+						fmt.Printf("%v", string(buff[:n]))
+						break
+					}
+					log.Println(buff[i])
+				}
+				i++
+			}
 			for {
 
 			}
