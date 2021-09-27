@@ -156,7 +156,8 @@ func main() {
 			}
 			s.ResetInputBuffer()
 			s.ResetOutputBuffer()
-
+			s.SetRTS(true)
+			s.SetDTR(true)
 			time.Sleep(time.Second / 2)
 			//n, err := s.Write(data)
 			//if err != nil {
