@@ -9,8 +9,8 @@ import (
 	"time"
 	//"go.bug.st/serial.v1"
 
-	//"github.com/tarm/serial"
 	"github.com/schleibinger/sio"
+	Serial "github.com/tarm/serial"
 	"go.bug.st/serial.v1/enumerator"
 	"log"
 	//"os"
@@ -147,8 +147,8 @@ func main() {
 			fmt.Printf("Found port: %s\n", port.Name)
 			fmt.Printf("   USB ID     %s:%s\n", port.VID, port.PID)
 			fmt.Printf("   USB serial %s\n", port.SerialNumber)
-
-			s, err := sio.Open(port.Name, syscall.B9600)
+			c := &Serial.Config{Name: port.Name, Baud: 115200}
+			s, err := Serial.OpenPort(c)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -187,7 +187,7 @@ func main() {
 			packet.packetId = 2
 			packet.command = 1
 			data = SetByte(packet)
-
+			s.Flush()
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
@@ -238,7 +238,7 @@ func main() {
 			data = SetByte(packet)
 			bytedata = SetData(0)
 			data = append(data, bytedata...)
-
+			s.Flush()
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
