@@ -162,7 +162,6 @@ func main() {
 			//}
 			log.Println(s.GetModemStatusBits())
 
-			fmt.Printf("Sent %v bytes\n", n)
 			buff := make([]byte, 100)
 			i := 0
 			//n, err = s.Read(buff)
