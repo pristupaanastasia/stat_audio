@@ -158,37 +158,37 @@ func main() {
 			s.ResetInputBuffer()
 			s.ResetOutputBuffer()
 			time.Sleep(time.Second / 2)
-			n, err := s.Write(data)
-			if err != nil {
-				log.Fatal(err)
-			}
+			//n, err := s.Write(data)
+			//if err != nil {
+			//	log.Fatal(err)
+			//}
 			log.Println(s.GetModemStatusBits())
 
-			fmt.Printf("Sent %v bytes\n", n)
-			buff := make([]byte, 100)
-			i := 0
-			n, err = s.Read(buff)
-			if err != nil {
-				log.Fatal(err)
-				continue
-			}
-			if n == 0 {
-				fmt.Println("\nEOF")
-				break
-			}
-			for i < n {
-
-				if buff[i] == 0x7A {
-					i = i + 3
-					if buff[i] == 0x80 {
-						log.Println("Conn success")
-						fmt.Printf("%v", string(buff[:n]))
-						break
-					}
-					log.Println(buff[i])
-				}
-				i++
-			}
+			//fmt.Printf("Sent %v bytes\n", n)
+			//buff := make([]byte, 100)
+			//i := 0
+			//n, err = s.Read(buff)
+			//if err != nil {
+			//	log.Fatal(err)
+			//	continue
+			//}
+			//if n == 0 {
+			//	fmt.Println("\nEOF")
+			//	break
+			//}
+			//for i < n {
+			//
+			//	if buff[i] == 0x7A {
+			//		i = i + 3
+			//		if buff[i] == 0x80 {
+			//			log.Println("Conn success")
+			//			fmt.Printf("%v", string(buff[:n]))
+			//			break
+			//		}
+			//		log.Println(buff[i])
+			//	}
+			//	i++
+			//}
 			packet.packetId = 2
 			packet.command = 1
 			data = SetByte(packet)
