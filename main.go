@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"github.com/npat-efault/crc16"
 	"go.bug.st/serial.v1"
-	"syscall"
+
 	_ "syscall"
 	"time"
 	//"go.bug.st/serial.v1"
 
-	"github.com/schleibinger/sio"
 	Serial "github.com/tarm/serial"
 	"go.bug.st/serial.v1/enumerator"
 	"log"
