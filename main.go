@@ -155,8 +155,8 @@ func main() {
 				log.Fatal(err)
 			}
 
-			s.ResetInputBuffer()
-			//s.ResetOutputBuffer()
+			//s.ResetInputBuffer()
+			s.ResetOutputBuffer()
 			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
@@ -243,8 +243,8 @@ func main() {
 			data = SetByte(packet)
 			bytedata = SetData(0)
 			data = append(data, bytedata...)
-			s.ResetInputBuffer()
-			//s.ResetOutputBuffer()
+			//s.ResetInputBuffer()
+			s.ResetOutputBuffer()
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
