@@ -165,8 +165,8 @@ func main() {
 			log.Println(s.GetModemStatusBits())
 
 			//fmt.Printf("Sent %v bytes\n", n)
-			//buff := make([]byte, 100)
-			//i := 0
+			buff := make([]byte, 100)
+			i := 0
 			//n, err = s.Read(buff)
 			//if err != nil {
 			//	log.Fatal(err)
@@ -193,7 +193,7 @@ func main() {
 			packet.command = 1
 			data = SetByte(packet)
 
-			n, err = s.Write(data)
+			n, err := s.Write(data)
 			if err != nil {
 				log.Fatal(err)
 			}
