@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"github.com/npat-efault/crc16"
 	"go.bug.st/serial.v1"
+	"syscall"
+	_ "syscall"
 	"time"
-
 	//"go.bug.st/serial.v1"
 
 	//"github.com/tarm/serial"
+	"github.com/schleibinger/sio"
 	"go.bug.st/serial.v1/enumerator"
-
 	"log"
 	//"os"
 	//"time"
@@ -140,9 +141,6 @@ func main() {
 
 	data := SetByte(packet)
 	log.Println(data)
-	mode := &serial.Mode{
-		BaudRate: 9600,
-	}
 
 	for _, port := range ports {
 		if port.IsUSB {
@@ -150,19 +148,16 @@ func main() {
 			fmt.Printf("   USB ID     %s:%s\n", port.VID, port.PID)
 			fmt.Printf("   USB serial %s\n", port.SerialNumber)
 
-			s, err := serial.Open(port.Name, mode)
+			s, err := sio.Open(port.Name, syscall.B9600)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			s.ResetInputBuffer()
-			s.ResetOutputBuffer()
 			time.Sleep(time.Second / 2)
 			n, err := s.Write(data)
 			if err != nil {
 				log.Fatal(err)
 			}
-			log.Println(s.GetModemStatusBits())
 
 			fmt.Printf("Sent %v bytes\n", n)
 			buff := make([]byte, 100)
@@ -243,8 +238,7 @@ func main() {
 			data = SetByte(packet)
 			bytedata = SetData(0)
 			data = append(data, bytedata...)
-			s.ResetInputBuffer()
-			s.ResetOutputBuffer()
+
 			n, err = s.Write(data)
 			if err != nil {
 				log.Fatal(err)
