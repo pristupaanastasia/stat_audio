@@ -189,28 +189,30 @@ func main() {
 			//	}
 			//	i++
 			//}
-			packet.packetId = 2
-			packet.command = 1
-			data = SetByte(packet)
+			//packet.packetId = 2
+			//packet.command = 1
+			//data = SetByte(packet)
 
-			n, err := s.Write(data)
+			n, err := s.Write([]byte{0x7B, 0x05, 0x01, 0x00, 0x00, 0x00, 0x55, 0x05, 0x00,
+				0x00, 0x2E, 0xF5, 0x7B, 0x05, 0x08, 0x02, 0x04, 0x00, 0x66, 0x06, 0x00,
+				0x00, 0x12, 0xF2, 0x30, 0x00, 0xCF, 0xFF})
 			if err != nil {
 				log.Fatal(err)
 			}
-			time.Sleep(time.Second)
+			//time.Sleep(time.Second)
 
-			packet.packetId = 3
-			packet.command = 0x0208
-
-			packet.lenData = 4
-			bytedata := SetData(48)
-			data = SetByte(packet)
-
-			data = append(data, bytedata...)
-			n, err = s.Write(data)
-			if err != nil {
-				log.Fatal(err)
-			}
+			//packet.packetId = 3
+			//packet.command = 0x0208
+			//
+			//packet.lenData = 4
+			//bytedata := SetData(48)
+			//data = SetByte(packet)
+			//
+			//data = append(data, bytedata...)
+			//n, err = s.Write(data)
+			//if err != nil {
+			//	log.Fatal(err)
+			//}
 			time.Sleep(time.Second)
 			buff = make([]byte, 100)
 			i = 0
@@ -237,18 +239,18 @@ func main() {
 				i++
 			}
 			time.Sleep(time.Second * 2)
-			packet.packetId = 4
-			packet.command = 3
-			packet.lenData = 4
-			data = SetByte(packet)
-			bytedata = SetData(0)
-			data = append(data, bytedata...)
-			s.ResetInputBuffer()
-			s.ResetOutputBuffer()
-			n, err = s.Write(data)
-			if err != nil {
-				log.Fatal(err)
-			}
+			//packet.packetId = 4
+			//packet.command = 3
+			//packet.lenData = 4
+			//data = SetByte(packet)
+			//bytedata = SetData(0)
+			//data = append(data, bytedata...)
+			//s.ResetInputBuffer()
+			//s.ResetOutputBuffer()
+			//n, err = s.Write(data)
+			//if err != nil {
+			//	log.Fatal(err)
+			//}
 			time.Sleep(time.Second)
 			buff = make([]byte, 100)
 			i = 0
